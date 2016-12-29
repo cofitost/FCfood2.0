@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.cofitost.fcfood20.ChooseActivity">
+    <item
+        android:id="@+id/action_settings_choose"
+        android:orderInCategory="100"
+        android:title="加入餐點"
+        app:showAsAction="never" />
+</menu>

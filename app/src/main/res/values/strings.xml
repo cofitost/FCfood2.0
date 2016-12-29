@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FCfood2.0</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_choose_result">ChooseResultActivity</string>
+    <string name="title_activity_choose">ChooseActivity</string>
+    <string name="title_activity_charge">ChargeActivity</string>
+    <string name="title_activity_choose_add">ChooseAddActivity</string>
+</resources>
