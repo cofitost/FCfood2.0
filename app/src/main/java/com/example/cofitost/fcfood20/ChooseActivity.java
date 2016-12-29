@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,24 @@ import android.view.View;
 import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChooseActivity extends AppCompatActivity {
 
@@ -49,12 +68,12 @@ public class ChooseActivity extends AppCompatActivity {
 
                     AlertDialog.Builder de = new AlertDialog.Builder(ChooseActivity.this);
                     de.setTitle("就決定吃這個");
-                    //choose = (int)(Math.random()* 39+1);
+                    onGet();
+
                     de.setMessage("Result");
                     de.setNegativeButton("詳細資訊", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
                             Intent in = new Intent();
                             in.setClass(ChooseActivity.this, ChooseResultActivity.class);
                             in.putExtra("KEY",choose);
@@ -78,6 +97,41 @@ public class ChooseActivity extends AppCompatActivity {
             }, 3000);
         }
     };
+
+    public void onGet(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                httpGet();
+            }
+        }).start();
+    }
+
+    public void httpGet(){
+        String result = null;
+
+        HttpClient client = new DefaultHttpClient();
+        try {
+            HttpGet get = new HttpGet("http://192.168.1.106:8080/android-backend/webapi/food/random");
+            HttpResponse responsePOST = client.execute(get);
+            HttpEntity resEntity = responsePOST.getEntity();
+            Log.d("abc",resEntity.toString());
+
+            if (resEntity != null) {
+                result = EntityUtils.toString(resEntity);
+                Log.i("abc",result);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            client.getConnectionManager().shutdown();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
