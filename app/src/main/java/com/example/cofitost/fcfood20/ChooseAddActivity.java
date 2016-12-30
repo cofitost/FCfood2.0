@@ -163,6 +163,8 @@ public class ChooseAddActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            client.getConnectionManager().shutdown();
         }
     }
 

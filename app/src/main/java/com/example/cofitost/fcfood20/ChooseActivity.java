@@ -32,7 +32,10 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +45,7 @@ public class ChooseActivity extends AppCompatActivity {
     Button go;
     int choose;
     ImageView image;
+    String result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +74,7 @@ public class ChooseActivity extends AppCompatActivity {
                     de.setTitle("就決定吃這個");
                     onGet();
 
-                    de.setMessage("Result");
+                    de.setMessage(result);
                     de.setNegativeButton("詳細資訊", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -108,27 +112,30 @@ public class ChooseActivity extends AppCompatActivity {
     }
 
     public void httpGet(){
-        String result = null;
 
         HttpClient client = new DefaultHttpClient();
         try {
             HttpGet get = new HttpGet("http://192.168.1.106:8080/android-backend/webapi/food/random");
             HttpResponse responsePOST = client.execute(get);
             HttpEntity resEntity = responsePOST.getEntity();
-            Log.d("abc",resEntity.toString());
+            InputStream is = resEntity.getContent();
+            BufferedReader in = new BufferedReader(new InputStreamReader(is));
 
-            if (resEntity != null) {
+            result = in.readLine();
+
+            Log.d("abc",result);
+
+            /*if (resEntity != null) {
                 result = EntityUtils.toString(resEntity);
                 Log.i("abc",result);
-            }
+            }*/
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             client.getConnectionManager().shutdown();
         }
     }
