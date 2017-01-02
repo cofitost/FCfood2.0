@@ -163,6 +163,14 @@ public class ChooseActivity extends AppCompatActivity {
             return true;
         }
 
+        else if(id == R.id.action_settings_showChooseData){
+            Intent intent = new Intent();
+            intent.setClass(ChooseActivity.this,ShowChooseDataActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

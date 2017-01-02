@@ -5,4 +5,5 @@
     <string name="title_activity_choose">ChooseActivity</string>
     <string name="title_activity_charge">ChargeActivity</string>
     <string name="title_activity_choose_add">ChooseAddActivity</string>
+    <string name="title_activity_show_choose_data">ShowChooseDataActivity</string>
 </resources>
