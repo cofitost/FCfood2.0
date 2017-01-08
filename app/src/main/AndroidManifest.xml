@@ -39,6 +39,10 @@
         <activity
             android:name=".ShowChooseDataActivity"
             android:label="@string/title_activity_show_choose_data"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShowChargeDataActivity"
+            android:label="@string/title_activity_show_charge_data"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

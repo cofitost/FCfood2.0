@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.cofitost.fcfood20.ChargeActivity">
+    <item
+        android:id="@+id/action_menu_charge"
+        android:orderInCategory="100"
+        android:title="顯示所有紀錄"
+        app:showAsAction="never" />
+</menu>

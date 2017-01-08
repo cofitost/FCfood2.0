@@ -11,6 +11,6 @@
     <item
         android:id="@+id/action_settings_showChooseData"
         android:orderInCategory="100"
-        android:title="顯示已存在資料"
+        android:title="顯示所有資料"
         app:showAsAction="never" />
 </menu>

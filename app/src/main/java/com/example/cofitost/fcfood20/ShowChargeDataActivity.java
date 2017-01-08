@@ -9,12 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 
-public class ChooseResultActivity extends AppCompatActivity {
+public class ShowChargeDataActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_result);
+        setContentView(R.layout.activity_show_charge_data);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
@@ -22,7 +22,7 @@ public class ChooseResultActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode,KeyEvent event)  { //捕捉返回鍵
         if  (keyCode== KeyEvent.KEYCODE_BACK )  {
             Intent intent = new Intent();
-            intent.setClass(ChooseResultActivity.this,ChooseActivity.class);
+            intent.setClass(ShowChargeDataActivity.this,ChargeActivity.class);
             startActivity(intent);
             finish();
             return true ;
