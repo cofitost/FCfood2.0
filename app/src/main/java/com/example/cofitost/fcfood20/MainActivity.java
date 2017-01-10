@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private void exit(){
         AlertDialog.Builder de = new AlertDialog.Builder(this);
         de.setMessage("確定退出?");
-        de.setNegativeButton("退出", new DialogInterface.OnClickListener() {
+        de.setPositiveButton("退出", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
 
-        de.setPositiveButton(" 取消 ", listener);
+        de.setNegativeButton(" 取消 ", listener);
         de.show();
     }
 }

@@ -49,7 +49,6 @@ import java.util.List;
 public class ChooseActivity extends AppCompatActivity {
 
     Button go;
-    int choose;
     ImageView image;
     String result,foodName,storeName,price,address;
     AlertDialog.Builder de;
@@ -77,12 +76,13 @@ public class ChooseActivity extends AppCompatActivity {
         }).start();
     }
 
+    //GET隨機資料
     public void httpGet(){
       String url = "http://140.134.26.9/Project1/api/PredictApi/GetMax/3";
         HttpClient client = new DefaultHttpClient();
         try {
-           //HttpGet get = new HttpGet("http://10.21.17.162:8080/android-backend/webapi/food/random");
-           HttpGet get = new HttpGet(url);
+           HttpGet get = new HttpGet("http://10.21.17.162:8080/android-backend/webapi/food/random");
+           //HttpGet get = new HttpGet(url);
             HttpResponse responsePOST = client.execute(get);
             HttpEntity resEntity = responsePOST.getEntity();
 
@@ -117,14 +117,18 @@ public class ChooseActivity extends AppCompatActivity {
             image.setImageResource(R.drawable.gif);
             gyroAnimation = (AnimationDrawable) image.getDrawable();
             gyroAnimation.start();
-            onGet();
+            //onGet();
+            foodName = "義大利麵";
+            storeName = "隨便";
+            price = "100";
+            address = "那裡";
         }
     };
 
     private Runnable text = new Runnable() {//結果寫在這
         @Override
         public void run() {
-            if((foodName!=null)&&(storeName!=null)&&(price!=null)&&(address!=null)) {
+            if(foodName!=null) {
                 setDialog();
                 handler.removeCallbacks(text);
                 gyroAnimation.stop();
@@ -143,7 +147,10 @@ public class ChooseActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Intent in = new Intent();
                 in.setClass(ChooseActivity.this, ChooseResultActivity.class);
-                in.putExtra("KEY",choose);
+                in.putExtra("foodName_KEY",foodName);
+                in.putExtra("storeName_KEY",storeName);
+                in.putExtra("price_KEY",price);
+                in.putExtra("address_KEY",address);
                 startActivity(in);
                 finish();
             }

@@ -131,6 +131,7 @@ public class ChooseAddActivity extends AppCompatActivity {
         }).start();
     }
 
+    //POST菜單
     public void httpPost(){
         String result = null;
 

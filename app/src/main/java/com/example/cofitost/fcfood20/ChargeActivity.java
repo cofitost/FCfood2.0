@@ -1,9 +1,12 @@
 package com.example.cofitost.fcfood20;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,11 +25,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -37,6 +43,9 @@ public class ChargeActivity extends AppCompatActivity {
 
     EditText foodName,price,date;
     Button finish;
+    AlertDialog.Builder total;
+    String result;
+    String money;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +59,54 @@ public class ChargeActivity extends AppCompatActivity {
 
         finish = (Button)findViewById(R.id.btn_charge_finish);
         finish.setOnClickListener(Cfinish);
+
+        total = new AlertDialog.Builder(ChargeActivity.this);
     }
 
     public OnClickListener Cfinish = new OnClickListener() {
         @Override
         public void onClick(View v) {
             onPost();
+            /*foodName.setText("");
+            price.setText("");
+            date.setText("");*/
             Toast.makeText(ChargeActivity.this,"資料登入成功",Toast.LENGTH_LONG).show();
         }
     };
+
+    public void onGet(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                httpGet();
+            }
+        }).start();
+    }
+
+    //GET總額
+    public void httpGet(){
+        String url = "http://140.134.26.9/Project1/api/PredictApi/GetMax/3";
+        HttpClient client = new DefaultHttpClient();
+        try {
+            HttpGet get = new HttpGet("http://10.21.17.162:8080/android-backend/webapi/food/random");
+            //HttpGet get = new HttpGet(url);
+            HttpResponse responsePOST = client.execute(get);
+            HttpEntity resEntity = responsePOST.getEntity();
+
+            if (resEntity != null) {
+                money = EntityUtils.toString(resEntity,HTTP.UTF_8);
+                Log.i("abc",money);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            client.getConnectionManager().shutdown();
+        }
+    }
 
     public void onPost(){
         new Thread(new Runnable() {
@@ -69,8 +117,8 @@ public class ChargeActivity extends AppCompatActivity {
         }).start();
     }
 
+    //POST單筆消費
     public void httpPost(){
-        String result = null;
 
         HttpClient client = new DefaultHttpClient();
         try {
@@ -105,6 +153,18 @@ public class ChargeActivity extends AppCompatActivity {
         }
     }
 
+    public void setDialog(){
+        total.setTitle("總額");
+        total.setMessage(money);
+        total.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        total.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -121,10 +181,8 @@ public class ChargeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_menu_charge) {
-            Intent intent = new Intent();
-            intent.setClass(ChargeActivity.this,ShowChargeDataActivity.class);
-            startActivity(intent);
-            finish();
+            money = "87";
+            setDialog();
             return true;
         }
 

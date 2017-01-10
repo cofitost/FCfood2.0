@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_menu_charge"
         android:orderInCategory="100"
-        android:title="顯示所有紀錄"
+        android:title="顯示總額"
         app:showAsAction="never" />
 </menu>
