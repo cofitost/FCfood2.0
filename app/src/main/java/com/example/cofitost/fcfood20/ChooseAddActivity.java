@@ -136,7 +136,7 @@ public class ChooseAddActivity extends AppCompatActivity {
 
         HttpClient client = new DefaultHttpClient();
         try {
-            HttpPost post = new HttpPost("http://192.168.1.106:8080/android-backend/webapi/food/add");
+            HttpPost post = new HttpPost("http://192.168.2.59:8080/android-backend/webapi/food/add");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             //params.add(new BasicNameValuePair("key",value));
             //params.add(new BasicNameValuePair("hour",postHour));
@@ -155,7 +155,7 @@ public class ChooseAddActivity extends AppCompatActivity {
 
             if (resEntity != null) {
                 result = EntityUtils.toString(resEntity);
-                Log.d("abc",result);
+                Log.d("abcd",result);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

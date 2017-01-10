@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,12 +33,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,62 +51,22 @@ public class ChooseActivity extends AppCompatActivity {
     Button go;
     int choose;
     ImageView image;
-    String result;
+    String result,foodName,storeName,price,address;
+    AlertDialog.Builder de;
+    Handler handler = new Handler();
+    AnimationDrawable gyroAnimation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        image = (ImageView)findViewById(R.id.iv_choose);
         setSupportActionBar(toolbar);
         go = (Button)findViewById(R.id.btn_go);
         go.setOnClickListener(Cgo);
-
-        image = (ImageView)findViewById(R.id.iv_choose);
+        de = new AlertDialog.Builder(ChooseActivity.this);
+        handler.post(text);
     }
-
-    public OnClickListener Cgo = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            image.setImageResource(R.drawable.gif);
-            final AnimationDrawable gyroAnimation = (AnimationDrawable) image.getDrawable();
-            gyroAnimation.start();
-
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-
-                    gyroAnimation.stop();
-
-                    AlertDialog.Builder de = new AlertDialog.Builder(ChooseActivity.this);
-                    de.setTitle("就決定吃這個");
-                    onGet();
-
-                    de.setMessage(result);
-                    de.setNegativeButton("詳細資訊", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent in = new Intent();
-                            in.setClass(ChooseActivity.this, ChooseResultActivity.class);
-                            in.putExtra("KEY",choose);
-                            startActivity(in);
-                            finish();
-                        }
-                    });
-                    de.setPositiveButton("再一次", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            Intent intent = new Intent();
-                            intent.setClass(ChooseActivity.this, ChooseActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                    de.show();
-
-                }
-            }, 3000);
-        }
-    };
 
     public void onGet(){
         new Thread(new Runnable() {
@@ -112,23 +78,28 @@ public class ChooseActivity extends AppCompatActivity {
     }
 
     public void httpGet(){
-
+      String url = "http://140.134.26.9/Project1/api/PredictApi/GetMax/3";
         HttpClient client = new DefaultHttpClient();
         try {
-            HttpGet get = new HttpGet("http://192.168.1.106:8080/android-backend/webapi/food/random");
+           //HttpGet get = new HttpGet("http://10.21.17.162:8080/android-backend/webapi/food/random");
+           HttpGet get = new HttpGet(url);
             HttpResponse responsePOST = client.execute(get);
             HttpEntity resEntity = responsePOST.getEntity();
-            InputStream is = resEntity.getContent();
-            BufferedReader in = new BufferedReader(new InputStreamReader(is));
 
-            result = in.readLine();
-
-            Log.d("abc",result);
-
-            /*if (resEntity != null) {
-                result = EntityUtils.toString(resEntity);
+            if (resEntity != null) {
+                result = EntityUtils.toString(resEntity,HTTP.UTF_8);
                 Log.i("abc",result);
-            }*/
+                try {
+                    JSONObject food = new JSONObject(result);
+                    foodName = food.getString("foodName");
+                    storeName = food.getString("storeName");
+                    price = food.getString("price");
+                    address = food.getString("address");
+                    Log.d("abc",foodName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -138,6 +109,56 @@ public class ChooseActivity extends AppCompatActivity {
         } finally {
             client.getConnectionManager().shutdown();
         }
+    }
+
+    public OnClickListener Cgo = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            image.setImageResource(R.drawable.gif);
+            gyroAnimation = (AnimationDrawable) image.getDrawable();
+            gyroAnimation.start();
+            onGet();
+        }
+    };
+
+    private Runnable text = new Runnable() {//結果寫在這
+        @Override
+        public void run() {
+            if((foodName!=null)&&(storeName!=null)&&(price!=null)&&(address!=null)) {
+                setDialog();
+                handler.removeCallbacks(text);
+                gyroAnimation.stop();
+            }
+            else{
+                handler.postDelayed(text,3000);
+            }
+        }
+    };
+
+    public void setDialog(){
+        de.setTitle("吃這個");
+        de.setMessage(foodName);
+        de.setNegativeButton("詳細資訊", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent in = new Intent();
+                in.setClass(ChooseActivity.this, ChooseResultActivity.class);
+                in.putExtra("KEY",choose);
+                startActivity(in);
+                finish();
+            }
+        });
+        de.setPositiveButton("在一次", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Intent intent = new Intent();
+                intent.setClass(ChooseActivity.this, ChooseActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        de.show();
     }
 
     @Override
@@ -174,7 +195,7 @@ public class ChooseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean onKeyDown(int keyCode,KeyEvent event)  { //捕捉返回鍵
+    public boolean onKeyDown(int keyCode,KeyEvent event)  { //???????^??
         if  (keyCode== KeyEvent.KEYCODE_BACK )  {
             Intent intent = new Intent();
             intent.setClass(ChooseActivity.this,MainActivity.class);

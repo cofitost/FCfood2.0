@@ -74,7 +74,7 @@ public class ChargeActivity extends AppCompatActivity {
 
         HttpClient client = new DefaultHttpClient();
         try {
-            HttpPost post = new HttpPost("http://192.168.1.106:8080/android-backend/webapi/food/add");
+            HttpPost post = new HttpPost("http://10.21.17.162:8080/android-backend/webapi/charge/add");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             //params.add(new BasicNameValuePair("key",value));
             //params.add(new BasicNameValuePair("hour",postHour));
@@ -92,7 +92,7 @@ public class ChargeActivity extends AppCompatActivity {
 
             if (resEntity != null) {
                 result = EntityUtils.toString(resEntity);
-                Log.d("abc",result);
+                Log.d("abcd",result);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
